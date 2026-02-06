@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+GEMINI_API_KEY1: ${AI_API}
+GEMINI_API_KEY2: ${AI_API_2}
+GEMINI_API_KEY3: ${AI_API_3}
+TELEGRAM_BOT_TOKEN: ${BOT_TOKEN}
+TELEGRAM_URL: https://api.telegram.org/bot
+LOG_FILE_PATH: ${LOG_FILE_PATH}
