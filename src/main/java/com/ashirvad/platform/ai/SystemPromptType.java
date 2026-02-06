@@ -1,0 +1,10 @@
+package com.ashirvad.platform.ai;
+
+public enum SystemPromptType {
+    GENAI_WRAPPER_CHAT,
+    PNL_EXPLANATION,
+    ETL_DIAGNOSIS,
+    ROLE_ASSISTANT_RISK_MANAGER,
+    ROLE_ASSISTANT_DATA_ENGINEER,
+    ROLE_ASSISTANT_PRODUCT_OWNER
+}
