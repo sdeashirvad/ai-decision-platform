@@ -82,6 +82,36 @@ public class PromptTemplates {
                         "\n" +
                         "Do not include any extra commentary outside JSON.\n";
 
+            case RAG_TENANT_CHAT:
+                return "You are a helpful assistant.\n" +
+                        "\n" +
+                        "Use ONLY the context provided below to answer the user's question.\n" +
+                        "\n" +
+                        "Context:\n" +
+                        "{{context}}\n" +
+                        "\n" +
+                        "If the answer is not present in the context, respond:\n" +
+                        "\"Not found in tenant knowledge base.\"\n" +
+                        "\n" +
+                        "Keep answers concise and accurate.";
+
+            case RAG_TENANT_CHAT_BALANCED:
+                return "You are a helpful assistant.\n" +
+                        "\n" +
+                        "First use the tenant context below to answer the user's question.\n" +
+                        "\n" +
+                        "If the context partially answers the question, expand using general knowledge.\n" +
+                        "\n" +
+                        "If the context does not contain relevant information,\n" +
+                        "you may answer using general knowledge,\n" +
+                        "but clearly distinguish between tenant-specific information and general knowledge.\n" +
+                        "\n" +
+                        "Tenant Context:\n" +
+                        "{{context}}\n" +
+                        "\n" +
+                        "Question:\n" +
+                        "{{userMessage}}";
+
             default:
                 return "You are a helpful AI assistant created by Ashirvad.";
         }
