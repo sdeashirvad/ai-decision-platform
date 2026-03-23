@@ -38,10 +38,10 @@ graph LR
 ```
 
 <!-- Screenshot 1: PnL Dashboard / Graph (Replace with your screenshot) -->
-![PnL Dashboard Demo](docs/images/pnl_dashboard.png)
+![PnL Dashboard Demo](docs/images/pnlGaurd-1.png)
 
 <!-- Screenshot 2: AI Explanation Result Snippet (Replace with your screenshot) -->
-![AI Explanation Result Demo](docs/images/ai_explanation_result.png)
+![AI Explanation Result Demo](docs/images/pnlGaurd-3.png)
 
 ### 2. 🛠️ ETL Pipeline Diagnosis
 Designed for data engineering teams, this module diagnoses failing Directed Acyclic Graphs (DAGs) and tasks. By analyzing error logs and task metadata, the AI engine determines the root cause, severity, suggested actions, and whether a retry is safe.
@@ -57,10 +57,10 @@ graph TD
 ```
 
 <!-- Screenshot 1: Airflow / DAG Failure Example (Replace with your screenshot) -->
-![DAG Failure Log Demo](docs/images/dag_failure.png)
+![DAG Failure Log Demo](docs/images/sentryAi-1.png)
 
 <!-- Screenshot 2: AI Root Cause Analysis & Retry Safety (Replace with your screenshot) -->
-![AI Root Cause Analysis Demo](docs/images/etl_root_cause_analysis.png)
+![AI Root Cause Analysis Demo](docs/images/sentryAi-2.png)
 
 ### 3. 🤖 Persona-Based AI Assistant
 Provides tailored insights based on user roles (`RISK_MANAGER`, `DATA_ENGINEER`, `PRODUCT_OWNER`). The assistant queries recent system anomalies and feeds them as context to the AI, allowing users to ask natural language questions and receive persona-specific advice.
@@ -77,10 +77,10 @@ graph TD
 ```
 
 <!-- Screenshot 1: Assistant Persona Selection (Replace with your screenshot) -->
-![Assistant Persona Selection Demo](docs/images/persona_selection.png)
+![Assistant Persona Selection Demo](docs/images/chatloom-1.png)
 
 <!-- Screenshot 2: Persona-Specific AI Response (Replace with your screenshot) -->
-![Persona AI Response Demo](docs/images/persona_ai_response.png)
+![Persona AI Response Demo](docs/images/chatloom-2.png)
 
 ### 4. 📚 Retrieval-Augmented Generation (RAG) & Telegram Bot
 Embeds tenant-specific documentation into a vector store to ground AI responses in real data, reducing hallucinations. Additionally, features a fully integrated Telegram Bot for conversational AI access on the go.
@@ -99,7 +99,7 @@ graph TD
 ```
 
 <!-- Screenshot 1: Document Seeding Workflow (Replace with your screenshot) -->
-![Document Seeding Demo](docs/images/document_seeding_demo.png)
+![Document Seeding Demo](docs/images/chatloom-3.png)
 
 <!-- Screenshot 2: Telegram Bot Chat Interface (Replace with your screenshot) -->
 ![Telegram Bot Interface Demo](docs/images/telegram_bot_interface.png)
