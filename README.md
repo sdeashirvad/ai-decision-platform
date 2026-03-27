@@ -62,91 +62,29 @@ graph TD
 <!-- Screenshot 2: AI Root Cause Analysis & Retry Safety (Replace with your screenshot) -->
 ![AI Root Cause Analysis Demo](docs/images/sentryAi-2.png)
 
-### 3. 🤖 Persona-Based AI Assistant
-Provides tailored insights based on user roles (`RISK_MANAGER`, `DATA_ENGINEER`, `PRODUCT_OWNER`). The assistant queries recent system anomalies and feeds them as context to the AI, allowing users to ask natural language questions and receive persona-specific advice.
+### 3. 🤖 Persona-Based Assistant
+Provides a specialized chat interface powered by RAG (Retrieval-Augmented Generation), allowing users to query platform data and documentation using natural language tailored to their specific roles.
 
-**Architecture Flow:**
-```mermaid
-graph TD
-    User[User + Persona] --> |Query| Assistant[AssistantService]
-    Assistant --> |Fetch Top 5 Anomalies| DB[(PostgreSQL)]
-    DB --> Assistant
-    Assistant --> |Inject Context + Persona Rules| Prompt[System Prompt Engine]
-    Prompt --> AI[Gemini AI]
-    AI --> User
-```
+## 🛠️ Getting Started
 
-<!-- Screenshot 1: Assistant Persona Selection (Replace with your screenshot) -->
-![Assistant Persona Selection Demo](docs/images/chatloom-1.png)
+### Prerequisites
+- Java 17+ & Maven 3.8+
+- Docker & Docker Compose
+- Google Gemini API Key
 
-<!-- Screenshot 2: Persona-Specific AI Response (Replace with your screenshot) -->
-![Persona AI Response Demo](docs/images/chatloom-2.png)
-
-### 4. 📚 Retrieval-Augmented Generation (RAG) & Telegram Bot
-Embeds tenant-specific documentation into a vector store to ground AI responses in real data, reducing hallucinations. Additionally, features a fully integrated Telegram Bot for conversational AI access on the go.
-
-**Architecture Flow:**
-```mermaid
-graph TD
-    Doc[Tenant Docs] --> Seed[SeedingService]
-    Seed --> Embed[EmbeddingService]
-    Embed --> Store[(Vector Store)]
-    User[User Query via Telegram] --> Chat[RagChatService]
-    Chat --> Store
-    Store --> |Relevant Context| Chat
-    Chat --> AI[Gemini API]
-    AI --> User
-```
-
-<!-- Screenshot 1: Document Seeding Workflow (Replace with your screenshot) -->
-![Document Seeding Demo](docs/images/chatloom-3.png)
-
-<!-- Screenshot 2: Telegram Bot Chat Interface (Replace with your screenshot) -->
-![Telegram Bot Interface Demo](docs/images/telegram_bot_interface.png)
-
----
-
-## 🛠️ Technology Stack
-- **Backend:** Java 17, Spring Boot 3.5.10
-- **Database:** PostgreSQL (via Aiven Cloud), Spring Data JPA / Hibernate
-- **AI Integration:** Google Gemini API (Custom Client with Failover logic)
-- **API Documentation:** Springdoc OpenAPI (Swagger UI)
-- **Build & Deployment:** Gradle, Docker
-
-## 🐳 Docker Build Instructions
-
-To build and run the application using Docker, follow these steps:
-
-1. **Build the application**:
+### Installation
+1. **Clone the repository:**
    ```bash
-   ./gradlew clean bootJar
+   git clone https://github.com/your-username/ai-decision-platform.git
+   cd ai-decision-platform
    ```
-
-2. **Build the Docker image**:
+2. **Configure Environment:**
+   Create an `application-local.yml` or set environment variables for `GOOGLE_AI_API_KEY` and your PostgreSQL credentials.
+3. **Run with Docker:**
    ```bash
-   docker build -t sdeashirvad/ai-decision-platform:latest .
+   docker-compose up -d
    ```
-
-3. **Run the Docker container**:
+4. **Launch Application:**
    ```bash
-   docker run -p 8080:8080 --env-file .env sdeashirvad/ai-decision-platform:latest
+   mvn spring-boot:run
    ```
-
-4. **Run the Docker container in detached mode**:
-   ```bash
-   docker run -d -p 8080:8080 --env-file .env sdeashirvad/ai-decision-platform:latest
-   ```
-
-## ⚙️ Environment Variables Required
-Create a `.env` file in the root directory (or `.env.example`) with the following variables:
-```env
-AI_API=your_gemini_api_key_1
-AI_API_2=your_gemini_api_key_2
-AI_API_3=your_gemini_api_key_3
-BOT_TOKEN=your_telegram_bot_token
-```
-*(Database credentials and Telegram API URLs are pre-configured in `application.yml`)*
-
-## 📚 API Documentation
-Once the application is running, you can access the interactive Swagger UI API documentation at:
-`http://localhost:8080/swagger-ui.html`
