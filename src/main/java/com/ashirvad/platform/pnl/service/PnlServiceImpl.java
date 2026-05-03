@@ -136,6 +136,7 @@ public class PnlServiceImpl implements PnlService {
         AnomalyRecord entity = new AnomalyRecord();
         entity.setDate(dto.getDate());
         entity.setDesk(dto.getDesk());
+        entity.setProduct(dto.getProduct());
         entity.setDeviation(dto.getDeviation());
         entity.setSeverity(dto.getSeverity());
 
@@ -158,6 +159,7 @@ public class PnlServiceImpl implements PnlService {
                 entity.getId(),
                 entity.getDate(),
                 entity.getDesk(),
+                entity.getProduct(),
                 entity.getDeviation(),
                 entity.getSeverity()
         );

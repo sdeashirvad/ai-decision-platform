@@ -1,6 +1,7 @@
 package com.ashirvad.platform.pnl.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -16,6 +17,9 @@ public class AnomalyRecordDto {
     @Schema(description = "Trading desk name", example = "EquityDerivatives")
     private String desk;
     
+    @Schema(description = "Product associated with the anomaly", example = "AAPL")
+    private String product;
+    
     @Schema(description = "Deviation from the mean PnL", example = "150000.00")
     private BigDecimal deviation;
     
@@ -25,10 +29,11 @@ public class AnomalyRecordDto {
     public AnomalyRecordDto() {
     }
 
-    public AnomalyRecordDto(UUID id, LocalDate date, String desk, BigDecimal deviation, String severity) {
+    public AnomalyRecordDto(UUID id, LocalDate date, String desk, String product, BigDecimal deviation, String severity) {
         this.id = id;
         this.date = date;
         this.desk = desk;
+        this.product = product;
         this.deviation = deviation;
         this.severity = severity;
     }
@@ -53,8 +58,16 @@ public class AnomalyRecordDto {
         return desk;
     }
 
-    public void setDesk(String desk) {
+public void setDesk(String desk) {
         this.desk = desk;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     public BigDecimal getDeviation() {

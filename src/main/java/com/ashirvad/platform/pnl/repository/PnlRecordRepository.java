@@ -17,6 +17,8 @@ import java.util.UUID;
 public interface PnlRecordRepository extends JpaRepository<PnlRecord, UUID>, JpaSpecificationExecutor<PnlRecord> {
     List<PnlRecord> findByDeskAndDate(String desk, LocalDate date);
 
+    Optional<PnlRecord> findByDateAndDeskAndProduct(LocalDate date, String desk, String product);
+
     @Query("SELECT AVG(p.pnlAmount) FROM PnlRecord p WHERE p.desk = :desk AND p.date BETWEEN :startDate AND :endDate")
     BigDecimal findAveragePnlForDesk(@Param("desk") String desk, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

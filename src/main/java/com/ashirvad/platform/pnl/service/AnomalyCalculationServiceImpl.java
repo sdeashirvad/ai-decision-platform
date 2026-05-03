@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +24,9 @@ public class AnomalyCalculationServiceImpl implements AnomalyCalculationService 
     private final PnlRecordRepository pnlRecordRepository;
     private final AnomalyRecordRepository anomalyRecordRepository;
 
+    private int anomaliesInserted = 0;
+    private int anomaliesUpdated = 0;
+
     public AnomalyCalculationServiceImpl(PnlRecordRepository pnlRecordRepository, AnomalyRecordRepository anomalyRecordRepository) {
         this.pnlRecordRepository = pnlRecordRepository;
         this.anomalyRecordRepository = anomalyRecordRepository;
@@ -32,16 +35,11 @@ public class AnomalyCalculationServiceImpl implements AnomalyCalculationService 
     @Override
     @Transactional
     public AnomalyCalculationResponseDto calculateAnomalies(String desk) {
+        anomaliesInserted = 0;
+        anomaliesUpdated = 0;
+
         List<PnlRecord> records;
         if (desk != null && !desk.isEmpty()) {
-            // Assuming we can filter by desk using a custom query or specification.
-            // Since I don't have a direct method for findByDesk in the repo interface yet, 
-            // I'll fetch all and filter in memory or use the specification if available.
-            // Ideally, I should add findByDesk to the repo, but for now, I'll use findAll and filter stream 
-            // to avoid modifying the repo interface if not strictly necessary, 
-            // but for performance, a repo method is better.
-            // However, the previous steps added JpaSpecificationExecutor, so I can use that.
-            // But to keep it simple and robust without constructing specs here:
             records = pnlRecordRepository.findAll().stream()
                     .filter(r -> r.getDesk().equals(desk))
                     .collect(Collectors.toList());
@@ -52,12 +50,8 @@ public class AnomalyCalculationServiceImpl implements AnomalyCalculationService 
         Map<String, List<PnlRecord>> recordsByDesk = records.stream()
                 .collect(Collectors.groupingBy(PnlRecord::getDesk));
 
-        List<AnomalyRecord> anomaliesToSave = new ArrayList<>();
-
         for (Map.Entry<String, List<PnlRecord>> entry : recordsByDesk.entrySet()) {
-            String currentDesk = entry.getKey();
             List<PnlRecord> deskRecords = entry.getValue();
-
             if (deskRecords.isEmpty()) continue;
 
             BigDecimal sum = deskRecords.stream()
@@ -67,30 +61,38 @@ public class AnomalyCalculationServiceImpl implements AnomalyCalculationService 
             BigDecimal count = new BigDecimal(deskRecords.size());
             BigDecimal mean = sum.divide(count, 2, RoundingMode.HALF_UP);
 
-            for (PnlRecord record : deskRecords) {
-                BigDecimal deviation = record.getPnlAmount().subtract(mean).abs();
+            deskRecords.forEach(record -> processPnlRecordForAnomalies(record, mean));
+        }
 
-                if (deviation.compareTo(THRESHOLD_MEDIUM) > 0) {
-                    AnomalyRecord anomaly = new AnomalyRecord();
-                    anomaly.setDate(record.getDate());
-                    anomaly.setDesk(currentDesk);
-                    anomaly.setDeviation(deviation);
-                    
-                    if (deviation.compareTo(THRESHOLD_HIGH) > 0) {
-                        anomaly.setSeverity("HIGH");
-                    } else {
-                        anomaly.setSeverity("MEDIUM");
-                    }
-                    
-                    anomaliesToSave.add(anomaly);
-                }
+        return new AnomalyCalculationResponseDto(anomaliesInserted, anomaliesUpdated);
+    }
+
+    private void processPnlRecordForAnomalies(PnlRecord record, BigDecimal mean) {
+        BigDecimal deviation = record.getPnlAmount().subtract(mean).abs();
+
+        if (deviation.compareTo(THRESHOLD_MEDIUM) > 0) {
+            String severity = (deviation.compareTo(THRESHOLD_HIGH) > 0) ? "HIGH" : "MEDIUM";
+
+            Optional<AnomalyRecord> existingAnomaly = anomalyRecordRepository.findByDateAndDeskAndProduct(
+                record.getDate(), record.getDesk(), record.getProduct()
+            );
+
+            if (existingAnomaly.isPresent()) {
+                AnomalyRecord anomalyToUpdate = existingAnomaly.get();
+                anomalyToUpdate.setDeviation(deviation);
+                anomalyToUpdate.setSeverity(severity);
+                anomalyRecordRepository.save(anomalyToUpdate);
+                anomaliesUpdated++;
+            } else {
+                AnomalyRecord newAnomaly = new AnomalyRecord();
+                newAnomaly.setDate(record.getDate());
+                newAnomaly.setDesk(record.getDesk());
+                newAnomaly.setProduct(record.getProduct());
+                newAnomaly.setDeviation(deviation);
+                newAnomaly.setSeverity(severity);
+                anomalyRecordRepository.save(newAnomaly);
+                anomaliesInserted++;
             }
         }
-
-        if (!anomaliesToSave.isEmpty()) {
-            anomalyRecordRepository.saveAll(anomaliesToSave);
-        }
-
-        return new AnomalyCalculationResponseDto(anomaliesToSave.size());
     }
 }

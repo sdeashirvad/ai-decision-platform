@@ -27,6 +27,9 @@ public class AnomalyRecord {
     @Column(nullable = false)
     private String desk;
 
+    @Column(nullable = false)
+    private String product;
+
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal deviation;
 
@@ -62,6 +65,14 @@ public class AnomalyRecord {
 
     public void setDesk(String desk) {
         this.desk = desk;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     public BigDecimal getDeviation() {
